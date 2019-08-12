@@ -10,15 +10,30 @@ let spaceShip = {
     move: "notMove"
 };
 
+let torpedos = [];
+
+
 const drawSpaceShip = (sx, sy, sWidth, sHeight) => {
     let shipImg = new Image;
     shipImg.addEventListener('load', function () {
         game.clearRect(0, 0, canvasWidth, canvasHeight);
         game.drawImage(shipImg, sx, sy, sWidth, sHeight, spaceShip.x, spaceShip.y, spaceShip.width, spaceShip.height);
+        if (torpedos.length > 0) {
+            for(let i = 0; i < torpedos.length; i++) {
+                drawTorpedo(torpedos[i].x, torpedos[i].y, torpedos[i].width, torpedos[i].height);
+            }
+        }
     });
-    shipImg.src = "../Game/img/spaceship.png";
+    shipImg.src = "img/spaceship.png";
 };
 
+const drawTorpedo = (dx,dy,width,height) => {
+    let torpedoImg = new Image;
+    torpedoImg.addEventListener('load', function () {
+        game.drawImage(torpedoImg, dx, dy, width, height);
+    });
+    torpedoImg.src = 'img/torpedo.png';
+};
 
 const drawSpaceShipNotMove = () => {
     drawSpaceShip(0, 325, 215, 325);
@@ -42,6 +57,27 @@ const drawSpaceShipMoveLeft = () => {
     spaceShip.x-=5;
 };
 
+const fire = () => {
+    let torpedo = new Object;
+    torpedo['x'] = spaceShip.x + (spaceShip.width/2);
+    torpedo['y'] = spaceShip.y;
+    torpedo['width'] = 5;
+    torpedo['height'] = 10;
+    
+    torpedos.push(torpedo);
+    
+    const moveTorpedo = setInterval(function(){
+        if(torpedo.y <= 0) {
+            clearInterval(moveTorpedo);
+            torpedos.splice(0,1);
+            console.log(torpedos.length);
+        }
+        
+        torpedo.y-=10;
+    },50);
+};
+
+
 const controlSpaceShip = ({keyCode}) => {
     keyCode === 68 && (spaceShip.move = 'right');
     keyCode === 65 && (spaceShip.move = 'left');
@@ -49,6 +85,7 @@ const controlSpaceShip = ({keyCode}) => {
 
 const keyUp = ({keyCode}) => {
     if(keyCode === 32) {
+        fire();
         return false;
     }
     spaceShip.move = 'notMove';
