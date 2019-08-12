@@ -1,9 +1,7 @@
 const canvasBG = first('#canvas-background');
-let ctx = canvasBG.getContext('2d');
-ctx.fillStyle = '#fff';
+let bg = canvasBG.getContext('2d');
+bg.fillStyle = '#fff';
 
-const canvasWidth = 968;
-const canvasHeight = 808;
 const starSize = 4;
 const maxStar = 100;
 let stars = [];
@@ -36,10 +34,10 @@ const draw = () => {
     if(!stars.length) {
         return false;
     }
-    ctx.clearRect(0,0,canvasWidth, canvasHeight);
+    bg.clearRect(0,0,canvasWidth, canvasHeight);
     for(let i = 0; i <= stars.length; i++) {
         if(stars[i]) {
-            ctx.fillRect(stars[i].x, stars[i].y, starSize, starSize);
+            bg.fillRect(stars[i].x, stars[i].y, starSize, starSize);
         } 
     }
 };
