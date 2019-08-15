@@ -22,7 +22,7 @@ const createStar = () => {
     const moveStar = setInterval(function () {
         if(star.y >= canvasHeight) {
             clearInterval(moveStar);
-            stars.splice(1,1);
+            stars.splice(0,1);
         }
         
         star.y += 2;
