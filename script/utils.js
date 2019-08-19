@@ -21,13 +21,14 @@ const KEY_CODES = {
 };
 
 const TORPEDO_SPEED = 25;
-const ENEMY_SPEED = 200;
+const ENEMY_SPEED = 50;
+const LINE_OF_ATTACK = 500;
 
 let torpedos = [];
 
 let enemys = [];
 
-const maxEnemys = 1;
+const maxEnemys = 5;
 
 const shipImg = new Image;
 shipImg.src = "img/spaceship.png";
@@ -53,8 +54,8 @@ const hitEnemy = (bullets,ships, music) => {
             const checkYHigh = ships[j].y - bullets[i].y < ships[j].height;
             const chekYLow = ships[j].y - bullets[i].y > -ships[j].height;
             
-            const chekXRight = ships[j].x - bullets[i].x < ships[j].width;
-            const chekXLeft = ships[j].x - bullets[i].x > -ships[j].width
+            const chekXRight = ships[j].x - bullets[i].x < (ships[j].width);
+            const chekXLeft = ships[j].x - bullets[i].x > -(ships[j].width + bullets[i].width);
     
             if(checkYHigh && chekYLow) {
                 if(chekXRight && chekXLeft) {
@@ -66,4 +67,32 @@ const hitEnemy = (bullets,ships, music) => {
             }
         }
     }
-}
+};
+
+const moveEnemyXY = (enemy,maxX,maxY) => {
+    if(enemy.directionX === 'left' && enemy.x > enemy.width) {
+        enemy.x-=3;
+    } else {
+        enemy.directionX = 'right';
+    }
+    
+    if(enemy.directionX === 'right' && enemy.x < (maxX - enemy.width)) {
+        enemy.x+=3;
+    } else {
+        enemy.directionX = 'left';
+    }
+    
+    if(enemy.directionY === 'down' && enemy.y < maxY ) {
+        enemy.y+=3;
+    } else {
+        enemy.directionY = 'up';
+    }
+    
+    if(enemy.directionY === 'up' && enemy.y > enemy.height ) {
+        enemy.y-=3;
+    } else {
+        enemy.directionY = 'down';
+    }
+    
+    return enemy;
+};

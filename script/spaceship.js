@@ -6,7 +6,7 @@ const drawSpaceShip = ({x,y,width,height,spritePosition,move}) => {
     game.clearRect(0, 0, canvasWidth, canvasHeight);
     game.drawImage(shipImg,spritePosition[0],spritePosition[1],spritePosition[2],spritePosition[3],x,y,width,height);
     
-    hitEnemy(torpedos, enemys,killEnemy);
+    hitEnemy(torpedos, enemys, killEnemy);
     chekLife();
     
     if (torpedos.length > 0) {
@@ -70,6 +70,9 @@ const createEnemy = () => {
     enemy['width'] = 20;
     enemy['height'] = 20;
     enemy['life'] = true;
+    enemy['directionY'] = 'down';
+    enemy.x > canvasWidth/2 && (enemy['direction'] = 'left');
+    enemy.x < canvasWidth/2 && (enemy['direction'] = 'right');
     
     enemys.push(enemy);
     
@@ -80,15 +83,7 @@ const createEnemy = () => {
             return false;
         }
         
-        if(enemy.y < 500) {
-            enemy.y+=5;
-        }
-        
-        if(enemy.x < (canvasWidth/2)) {
-            enemy.x+=5; 
-        } else {
-            enemy.x-=5;
-        }
+        enemy = moveEnemyXY(enemy, canvasWidth, LINE_OF_ATTACK);
         
     }, ENEMY_SPEED);
 };
