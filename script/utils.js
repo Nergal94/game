@@ -1,15 +1,17 @@
 const first = element => document.querySelector(element);
 const all = element => document.querySelectorAll(element);
 
+const startButton = first('#new-game');
+
 const canvasWidth = 960;
-const canvasHeight = 800;
+const canvasHeight = 750;
 
 let spaceShip = {
-    life: true,
+    life: false,
     width: 40,
     height: 70,
     x: canvasWidth / 2,
-    y: 720,
+    y: 670,
     spritePosition: [0, 325, 215, 325],
     move: "notMove"
 };
@@ -23,12 +25,16 @@ const KEY_CODES = {
 const TORPEDO_SPEED = 25;
 const ENEMY_SPEED = 50;
 const LINE_OF_ATTACK = 500;
+const FIRE_ENEMY_DELAY = 3500;
+const ENEMY_TORPEDO_SPEED = 25;
 
 let torpedos = [];
 
+let enemyTorpedos = [];
+
 let enemys = [];
 
-const maxEnemys = 5;
+let maxEnemys = 5;
 
 const shipImg = new Image;
 shipImg.src = "img/spaceship.png";
@@ -38,6 +44,9 @@ torpedoImg.src = 'img/torpedo.png';
 
 const enemyImg = new Image;
 enemyImg.src = 'img/enemy.png';
+
+const enemyTorpedoImg = new Image;
+enemyTorpedoImg.src = 'img/enemy-torpedo.png';
 
 const fireAudio = new Audio('audio/fire.mp3');
 const killEnemy = new Audio('audio/Kill_Enemy_Sound_Effect.mp3');
@@ -96,3 +105,19 @@ const moveEnemyXY = (enemy,maxX,maxY) => {
     
     return enemy;
 };
+
+const moveEnemyTorpedoX = (x, targetX) => {
+    if(x < targetX) {
+        x+=0.5;
+    } else {
+        x-=0.5;
+    }
+    return x;
+};
+
+const startNewGame = () => {
+    spaceShip.life = true;
+    startButton.style.display = 'none';
+};
+
+startButton.addEventListener('click', startNewGame);

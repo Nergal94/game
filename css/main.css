@@ -5,12 +5,12 @@ html, body {
     background-image: url(../img/background.jpg);
     background-size: cover;
     background-repeat: no-repeat;
-    min-height: 900px;
+    min-height: 800px;
 }
 
 .container {
     width: 100%;
-    padding-top: 50px;
+    padding-top: 20px;
 }
 
 .canvas-container {
@@ -20,7 +20,7 @@ html, body {
     display: block;
     -webkit-box-shadow: 5px;
     box-shadow: 5px;
-    height: 800px;
+    height: 750px;
     width: 960px;
 }
 
@@ -34,4 +34,21 @@ html, body {
     background-color: #000;
     position: absolute;
     z-index: 0;
+}
+
+#new-game {
+    height: 100px;
+    width: 350px;
+    background-color: #34ff2c;
+    border: none;
+    border-radius: 30px;
+    font-size: 44px;
+    color: red;
+    font-weight: bold;
+    position: absolute;
+    top: 30%;
+    right: 50%;
+    margin-right: -175px;
+    cursor: pointer;
+    z-index: 10000000000;
 }

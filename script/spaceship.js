@@ -3,6 +3,11 @@ let game = canvasGame.getContext('2d');
 
 
 const drawSpaceShip = ({x,y,width,height,spritePosition,move}) => {
+    
+    if(!spaceShip.life) {
+        return false;
+    };
+    
     game.clearRect(0, 0, canvasWidth, canvasHeight);
     game.drawImage(shipImg,spritePosition[0],spritePosition[1],spritePosition[2],spritePosition[3],x,y,width,height);
     
@@ -17,7 +22,13 @@ const drawSpaceShip = ({x,y,width,height,spritePosition,move}) => {
     
     if (enemys.length > 0) {
         for(let i = 0; i < enemys.length; i++) {
-                drawEnemy(enemys[i].x, enemys[i].y, enemys[i].width, enemys[i].height);
+            drawEnemy(enemys[i].x, enemys[i].y, enemys[i].width, enemys[i].height);
+        }
+    }
+    
+    if (enemyTorpedos.length > 0) {
+        for(let i = 0; i < enemyTorpedos.length; i++) {
+            drawEnemyTorpedos(enemyTorpedos[i].x, enemyTorpedos[i].y, enemyTorpedos[i].width, enemyTorpedos[i].height);
         }
     }
     
@@ -31,6 +42,10 @@ const drawTorpedo = (dx,dy,width,height) => {
 
 const drawEnemy = (dx,dy,width,height) => {
     game.drawImage(enemyImg, dx, dy, width, height); 
+};
+
+const drawEnemyTorpedos = (dx,dy,width,height) => {
+    game.drawImage(enemyTorpedoImg, dx, dy, width, height);
 };
 
 
@@ -60,15 +75,15 @@ const chekLife = () => {
 
 
 const createEnemy = () => {
-    if(enemys.length === maxEnemys) {
+    if(enemys.length === maxEnemys || !spaceShip.life) {
         return false;
     }
     
     let enemy = new Object;
     enemy['x'] = Math.random() * canvasWidth;
     enemy['y'] = 0;
-    enemy['width'] = 20;
-    enemy['height'] = 20;
+    enemy['width'] = 30;
+    enemy['height'] = 30;
     enemy['life'] = true;
     enemy['directionY'] = 'down';
     enemy.x > canvasWidth/2 && (enemy['direction'] = 'left');
@@ -86,6 +101,34 @@ const createEnemy = () => {
         enemy = moveEnemyXY(enemy, canvasWidth, LINE_OF_ATTACK);
         
     }, ENEMY_SPEED);
+    
+    setInterval(function(){
+        if(!enemy.life) {
+            return false;
+        }
+        
+        let enemyTorpedo = new Object;
+        enemyTorpedo['x'] = enemy.x;
+        enemyTorpedo['y'] = enemy.y;
+        enemyTorpedo['life'] = true;
+        enemyTorpedo['width'] = 10;
+        enemyTorpedo['height'] = 20;
+        
+        enemyTorpedos.push(enemyTorpedo);
+        
+        const moveEnemyTorpedo = setInterval(function(){
+            if(enemyTorpedo.y > canvasHeight) {
+                clearInterval(moveEnemyTorpedo);
+                enemyTorpedo.life = false;
+                return false;
+            }
+            
+            enemyTorpedo.x = moveEnemyTorpedoX(enemyTorpedo.x, (spaceShip.x + spaceShip.width/2));
+            enemyTorpedo.y+=3;
+            
+        }, ENEMY_TORPEDO_SPEED);
+        
+    },FIRE_ENEMY_DELAY);
 };
 
 const fire = () => {
