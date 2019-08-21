@@ -7,10 +7,15 @@
 </head>
 <body>
     <div class="container">
-           <div class="canvas-container">
+            <div class="show-score">SCORE: <span class="span-score">0</span></div>
+            <div class="canvas-container">
                <canvas id="canvas-background" height="750px", width="960"></canvas>
                <canvas id="canvas-game" height="750px", width="960"></canvas>
                <button id="new-game">New Game</button>
+               <div class="game-over">
+                   <h1>GAME OVER</h1>
+                   <h2>YOU SCORE: <span class="score"></span></h2>
+               </div>
            </div>
     </div>
     <audio src="audio/start.mp3" autoplay></audio>

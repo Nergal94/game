@@ -2,10 +2,15 @@ const first = element => document.querySelector(element);
 const all = element => document.querySelectorAll(element);
 
 const startButton = first('#new-game');
+const gameOver = first('.game-over');
+const scoreText = first('.score');
+const showScrore = first('.show-score');
+const showScoreSpan = first('.span-score');
 
 const canvasWidth = 960;
 const canvasHeight = 750;
 let isGameStarted = false;
+let score = 0;
 
 let spaceShip = {
     life: false,
@@ -73,6 +78,8 @@ const hitEnemy = (bullets,ships, music) => {
                     ships[j].life = false;
                     bullets[i].life = false; 
                     music.play();
+                    score+=50;
+                    showScoreSpan.innerHTML = score;
                 }
                 
             }
@@ -120,6 +127,28 @@ const moveEnemyRocketX = (rocket, targetX) => {
     }
 };
 
+const gameIsOver = () => {
+    isGameStarted = false;
+    scoreText.innerHTML = score;
+    gameOver.style.display = 'block';
+    startButton.style.display = 'block';
+    showScrore.style.display = 'none';
+};
+
+const chekHit = (rocket, ship) => {
+    const isHit = () => {
+        const checkXRight = rocket.x - ship.x < ship.width;
+        const checkXLeft = rocket.x - ship.x > -rocket.width;
+
+        if(checkXLeft && checkXRight) {
+            ship.life = false;
+            gameIsOver();
+        }
+    };
+
+    rocket.y >= ship.y && isHit();
+};
+
 const fireEnemy = allEnemys => {
     let indexOfFireEnemy = Math.ceil((Math.random() * allEnemys.length));
     
@@ -148,6 +177,8 @@ const fireEnemy = allEnemys => {
             enemyRockets.splice(0,1);
             return false;
         }
+
+        chekHit(enemyRocket, spaceShip);
             
         moveEnemyRocketX(enemyRocket, (spaceShip.x + spaceShip.width/2));
         enemyRocket.y+=3;
@@ -158,6 +189,14 @@ const fireEnemy = allEnemys => {
 const startNewGame = () => {
     isGameStarted = true;
     startButton.style.display = 'none';
+    gameOver.style.display = 'none';
+    showScrore.style.display = 'block';
+    rockets = [];
+    enemyRockets = [];
+    enemys = [];
+    maxEnemys = 5;
+    score = 0;
+    showScoreSpan.innerHTML = score;
 };
 
 startButton.addEventListener('click', startNewGame);
