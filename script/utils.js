@@ -11,6 +11,8 @@ const canvasWidth = 960;
 const canvasHeight = 750;
 let isGameStarted = false;
 let score = 0;
+let intermediateScore = 0;
+let FIRE_ENEMY_DELAY = 3000;
 
 let spaceShip = {
     life: true,
@@ -31,9 +33,10 @@ const KEY_CODES = {
 const ROCKETS_SPEED = 25;
 const ENEMY_SPEED = 50;
 const LINE_OF_ATTACK = 400;
-const FIRE_ENEMY_DELAY = 3000;
 const ENEMY_ROCKETS_SPEED = 25;
 const CREATE_ENEMY_DELAY = 500;
+const FIVE_HUNDRED_POINTS = 500;
+const LOW_LIMIT_FIRE_ENEMY_DELAY = 1000;
 
 const spriteExplosionColection = [
     {sx:0,sy:0,swidth:192,sheight:192},
@@ -88,6 +91,15 @@ const createExplosion = (x,y,width,height) => {
     explosions.push(explosion);
 };
 
+const makeGameHarder = () => {
+    if(score - intermediateScore >= FIVE_HUNDRED_POINTS) {
+        maxEnemys++;
+        intermediateScore = score;
+        if(FIRE_ENEMY_DELAY > LOW_LIMIT_FIRE_ENEMY_DELAY) {
+            FIRE_ENEMY_DELAY -= 200;
+        }
+    }
+};
 
 const hitEnemy = (bullets, ships, music) => {
     if (!bullets.length || !ships.length) {
@@ -111,6 +123,7 @@ const hitEnemy = (bullets, ships, music) => {
                     score += 50;
                     showScoreSpan.innerHTML = score;
                     createExplosion(ships[j].x,ships[j].y,ships[j].width, ships[j].height);
+                    makeGameHarder();
                 }
 
             }
