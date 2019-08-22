@@ -1,6 +1,6 @@
 const canvasBG = first('#canvas-background');
 let bg = canvasBG.getContext('2d');
-bg.fillStyle = '#fff';
+bg.fillStyle = 'rgba(255,255,255,0.5)';
 
 const starSize = 4;
 const maxStar = 100;

@@ -1,6 +1,11 @@
 const canvasGame = first('#canvas-game');
 let game = canvasGame.getContext('2d');
 
+const drawItem = ({sprite, x, y, width, height}) => {
+    game.drawImage(sprite, x, y, width, height);
+};
+
+const drawItems = items => items.map(item => drawItem(item));
 
 const drawSpaceShip = ({x,y,width,height,spritePosition,move}) => {
     
@@ -14,47 +19,24 @@ const drawSpaceShip = ({x,y,width,height,spritePosition,move}) => {
     hitEnemy(rockets, enemys, killEnemy);
     chekLife();
 
-    for(let i = 0; i < rockets.length; i++) {
-        drawRockets(rockets[i].x, rockets[i].y, rockets[i].width, rockets[i].height);
-    }
-
-    
- 
-    for(let i = 0; i < enemys.length; i++) {
-        drawEnemy(enemys[i].x, enemys[i].y, enemys[i].width, enemys[i].height);
-    }
-  
-    
-    for(let i = 0; i < enemyRockets.length; i++) {
-        drawEnemyRockets(enemyRockets[i].x, enemyRockets[i].y, enemyRockets[i].width, enemyRockets[i].height);
-    }
+    drawItems(enemys);
+    drawItems(rockets);
+    drawItems(enemyRockets);
  
     
-    move === 'right' && drawSpaceShipMoveRight();
-    move === 'left' && drawSpaceShipMoveLeft();
-};
-
-const drawRockets = (dx,dy,width,height) => {
-    game.drawImage(rocketsImg, dx, dy, width, height);  
-};
-
-const drawEnemy = (dx,dy,width,height) => {
-    game.drawImage(enemyImg, dx, dy, width, height); 
-};
-
-const drawEnemyRockets = (dx,dy,width,height) => {
-    game.drawImage(enemyRocketImg, dx, dy, width, height);
+    move === 'right' && moveSpaceShipRight();
+    move === 'left' && moveSpaceShipRight();
 };
 
 
-const drawSpaceShipMoveRight = () => {
+const moveSpaceShipRight = () => {
     if (spaceShip.move === 'notMove' || spaceShip.x > (canvasWidth - spaceShip.width)) {
         return false;
     }
     spaceShip.x+=5;
 };
 
-const drawSpaceShipMoveLeft = () => {
+const moveSpaceShipLeft = () => {
     if (spaceShip.move === 'notMove' || spaceShip.x < 0) {
         return false;
     }
@@ -77,13 +59,15 @@ const createEnemy = () => {
         return false;
     }
     
-    let enemy = new Object();
-    enemy.x = Math.random() * canvasWidth;
-    enemy.y = 0;
-    enemy.width = 30;
-    enemy.height = 30;
-    enemy.life = true;
-    enemy.direction = 'down';
+    let enemy = {
+        sprite: enemyImg,
+        x: Math.random() * canvasWidth,
+        y: 0,
+        width: 30,
+        height: 30,
+        life: true
+    };
+    
     enemy.x > canvasWidth/2 && (enemy.direction = 'left');
     enemy.x < canvasWidth/2 && (enemy.direction = 'right');
     
@@ -99,45 +83,19 @@ const createEnemy = () => {
         moveEnemyXY(enemy, canvasWidth, LINE_OF_ATTACK);
         
     }, ENEMY_SPEED);
-    
-//    setInterval(function(){
-//        if(!enemy.life) {
-//            return false;
-//        }
-//        
-//        let enemyRocket = new Object;
-//        enemyRocket['x'] = enemy.x;
-//        enemyRocket['y'] = enemy.y;
-//        enemyRocket['life'] = true;
-//        enemyRocket['width'] = 10;
-//        enemyRocket['height'] = 20;
-//        
-//        enemyRockets.push(enemyRocket);
-//        
-//        const moveEnemyRocket = setInterval(function(){
-//            if(enemyRocket.y > canvasHeight) {
-//                clearInterval(moveEnemyRocket);
-//                enemyRocket.life = false;
-//                return false;
-//            }
-//            
-//            enemyRocket.x = moveEnemyRocketX(enemyRocket.x, (spaceShip.x + spaceShip.width/2));
-//            enemyRocket.y+=3;
-//            
-//        }, ENEMY_ROCKETS_SPEED);
-//        
-//    },FIRE_ENEMY_DELAY);
 };
 
 const fire = () => {
     fireAudio.play();
     
-    let rocket = new Object;
-    rocket['x'] = spaceShip.x + (spaceShip.width/2); 
-    rocket['y'] = spaceShip.y;
-    rocket['width'] = 5;
-    rocket['height'] = 10;
-    rocket['life'] = true;
+    let rocket = {
+        sprite: rocketsImg,
+        x: spaceShip.x + (spaceShip.width/2),
+        y: spaceShip.y,
+        width: 5,
+        height: 10,
+        life:true
+    }
     
     rockets.push(rocket);
     
@@ -181,7 +139,7 @@ const keyUp = ({keyCode}) => {
 const flight = () => {
     drawSpaceShip(spaceShip);
     requestAnimationFrame(flight);
-}
+};
 
 
 window.addEventListener('keydown', controlSpaceShip);

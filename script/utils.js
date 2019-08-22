@@ -59,29 +59,29 @@ const fireAudio = new Audio('audio/fire.mp3');
 const killEnemy = new Audio('audio/Kill_Enemy_Sound_Effect.mp3');
 
 
-const hitEnemy = (bullets,ships, music) => {
-    if(!bullets.length || !ships.length) {
+const hitEnemy = (bullets, ships, music) => {
+    if (!bullets.length || !ships.length) {
         return false;
     }
-    
-    for(let i = 0; i < bullets.length; i++) {
+
+    for (let i = 0; i < bullets.length; i++) {
         for (let j = 0; j < ships.length; j++) {
-            
+
             const checkYHigh = ships[j].y - bullets[i].y < ships[j].height;
             const chekYLow = ships[j].y - bullets[i].y > -ships[j].height;
-            
+
             const chekXRight = ships[j].x - bullets[i].x < (bullets[i].width);
             const chekXLeft = ships[j].x - bullets[i].x > -(ships[j].width + bullets[i].width);
-    
-            if(checkYHigh && chekYLow) {
-                if(chekXRight && chekXLeft) {
+
+            if (checkYHigh && chekYLow) {
+                if (chekXRight && chekXLeft) {
                     ships[j].life = false;
-                    bullets[i].life = false; 
+                    bullets[i].life = false;
                     music.play();
-                    score+=50;
+                    score += 50;
                     showScoreSpan.innerHTML = score;
                 }
-                
+
             }
         }
     }
@@ -103,7 +103,7 @@ const moveEnemyX = (enemy, max, dx = 3) => {
 
 const moveEnemyY = (enemy, max, dx = 3) => {
     const isCanMoveDown = enemy.directionY === 'down' && enemy.y < max;
-    const isCanMoveUp = !isCanMoveDown && enemy.y > enemy.height ;
+    const isCanMoveUp = !isCanMoveDown && enemy.y > enemy.height;
     const isCanMove = isCanMoveDown || isCanMoveUp;
 
     if (isCanMove) {
@@ -120,10 +120,10 @@ const moveEnemyXY = (enemy, maxX, maxY) => {
 };
 
 const moveEnemyRocketX = (rocket, targetX) => {
-    if(rocket.x < targetX) {
-        rocket.x+=1;
+    if (rocket.x < targetX) {
+        rocket.x += 1;
     } else {
-        rocket.x-=1;
+        rocket.x -= 1;
     }
 };
 
@@ -140,7 +140,7 @@ const chekHit = (rocket, ship) => {
         const checkXRight = rocket.x - ship.x < ship.width;
         const checkXLeft = rocket.x - ship.x > -rocket.width;
 
-        if(checkXLeft && checkXRight) {
+        if (checkXLeft && checkXRight) {
             ship.life = false;
             gameIsOver();
         }
@@ -151,38 +151,41 @@ const chekHit = (rocket, ship) => {
 
 const fireEnemy = allEnemys => {
     let indexOfFireEnemy = Math.ceil((Math.random() * allEnemys.length));
-    
-    if(indexOfFireEnemy === allEnemys.length) {
+
+    if (indexOfFireEnemy === allEnemys.length) {
         indexOfFireEnemy--;
     }
-    
-    if(!isGameStarted || allEnemys.length === 0) {
+
+    if (!isGameStarted || allEnemys.length === 0) {
         return false;
     }
-        
-    let enemyRocket = new Object();
-    
-    enemyRocket.x = allEnemys[indexOfFireEnemy].x;
-    enemyRocket.y = allEnemys[indexOfFireEnemy].y;
-    enemyRocket.life = true;
-    enemyRocket.width = 10;
-    enemyRocket.height = 20;
-        
+
+    let enemyRocket = {
+        sprite: enemyRocketImg,
+        x: allEnemys[indexOfFireEnemy].x,
+        y: allEnemys[indexOfFireEnemy].y,
+        life: true,
+        width: 10,
+        height: 20
+    };
+
+
+
     enemyRockets.push(enemyRocket);
-    
-    const moveEnemyRocket = setInterval(function(){
-        if(enemyRocket.y > canvasHeight) {
+
+    const moveEnemyRocket = setInterval(function () {
+        if (enemyRocket.y > canvasHeight) {
             clearInterval(moveEnemyRocket);
             enemyRocket.life = false;
-            enemyRockets.splice(0,1);
+            enemyRockets.splice(0, 1);
             return false;
         }
 
         chekHit(enemyRocket, spaceShip);
-            
-        moveEnemyRocketX(enemyRocket, (spaceShip.x + spaceShip.width/2));
-        enemyRocket.y+=3;
-            
+
+        moveEnemyRocketX(enemyRocket, (spaceShip.x + spaceShip.width / 2));
+        enemyRocket.y += 3;
+
     }, ENEMY_ROCKETS_SPEED);
 };
 
