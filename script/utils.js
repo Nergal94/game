@@ -206,33 +206,51 @@ const fireEnemy = allEnemys => {
         return false;
     }
 
-    let enemyRocket = {
-        sprite: enemyRocketImg,
-        x: allEnemys[indexOfFireEnemy].x,
-        y: allEnemys[indexOfFireEnemy].y,
-        life: true,
-        width: 10,
-        height: 20
-    };
+    const createRockets = (index,allEnemys) => {
 
+        let howMuchEnemyIsFire = Math.ceil(allEnemys.length/2);
+        let enemysArray = [];
 
-
-    enemyRockets.push(enemyRocket);
-
-    const moveEnemyRocket = setInterval(function () {
-        if (enemyRocket.y > canvasHeight) {
-            clearInterval(moveEnemyRocket);
-            enemyRocket.life = false;
-            enemyRockets.splice(0, 1);
-            return false;
+        if(index < howMuchEnemyIsFire) {
+            enemysArray = allEnemys.slice(index, howMuchEnemyIsFire);
+        } else {
+            enemysArray = allEnemys.slice(howMuchEnemyIsFire, index);
         }
 
-        chekHit(enemyRocket, spaceShip);
+        const createRocket = item => {
+            let enemyRocket = {
+                sprite: enemyRocketImg,
+                x: item.x,
+                y: item.y,
+                life: true,
+                width: 10,
+                height: 20
+            };
+        
+            enemyRockets.push(enemyRocket);
+    
+            const moveEnemyRocket = setInterval(function () {
+                if (enemyRocket.y > canvasHeight) {
+                    clearInterval(moveEnemyRocket);
+                    enemyRocket.life = false;
+                    enemyRockets.splice(0, 1);
+                    return false;
+                }
+        
+                chekHit(enemyRocket, spaceShip);
+        
+                moveEnemyRocketX(enemyRocket, (spaceShip.x + spaceShip.width / 2));
+                enemyRocket.y += 3;
+        
+            }, ENEMY_ROCKETS_SPEED);
+        };
 
-        moveEnemyRocketX(enemyRocket, (spaceShip.x + spaceShip.width / 2));
-        enemyRocket.y += 3;
+        enemysArray.map(item => createRocket(item));
+        
+    };
 
-    }, ENEMY_ROCKETS_SPEED);
+    createRockets(indexOfFireEnemy,enemys);
+
 };
 
 
