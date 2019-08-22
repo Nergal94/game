@@ -23,21 +23,21 @@ const drawExplosion = ({sprite, x, y, width, height,spriteIndex},index) => {
 const drawExplosions = items => items.map((item,index) => drawExplosion(item,index));
 
 const drawSpaceShip = ({x,y,width,height,spritePosition,move}) => {
-    
-    if(!isGameStarted) {
-        return false;
-    };
-    
-    game.clearRect(0, 0, canvasWidth, canvasHeight);
-    game.drawImage(shipImg,spritePosition[0],spritePosition[1],spritePosition[2],spritePosition[3],x,y,width,height);
-    
-    hitEnemy(rockets, enemys, killEnemy);
-    chekLife();
 
+    game.clearRect(0, 0, canvasWidth, canvasHeight);
     drawItems(enemys);
     drawItems(rockets);
     drawItems(enemyRockets);
     drawExplosions(explosions);
+
+    if(!isGameStarted) {
+        return false;
+    };
+    
+    game.drawImage(shipImg,spritePosition[0],spritePosition[1],spritePosition[2],spritePosition[3],x,y,width,height);
+    
+    hitEnemy(rockets, enemys, killEnemy);
+    chekLife();
     
     move === 'right' && moveSpaceShipRight();
     move === 'left' && moveSpaceShipLeft();
@@ -102,6 +102,10 @@ const createEnemy = () => {
 };
 
 const fire = () => {
+    if(!spaceShip.life) {
+        return false;
+    }
+
     fireAudio.play();
     
     let rocket = {

@@ -13,7 +13,7 @@ let isGameStarted = false;
 let score = 0;
 
 let spaceShip = {
-    life: false,
+    life: true,
     width: 40,
     height: 70,
     x: canvasWidth / 2,
@@ -75,12 +75,12 @@ const killEnemy = new Audio('audio/Kill_Enemy_Sound_Effect.mp3');
 const startGameMusic = new Audio('audio/start.mp3');
 const gameOverMusic = new Audio('audio/game-over.mp3');
 
-const createExplosion = (x,y) => {
+const createExplosion = (x,y,width,height) => {
     explosion = {
         x: x,
         y: y,
-        width: 30,
-        height: 30,
+        width: width,
+        height: height,
         sprite: explosionImg,
         spriteIndex: 0
     };
@@ -110,7 +110,7 @@ const hitEnemy = (bullets, ships, music) => {
                     music.play();
                     score += 50;
                     showScoreSpan.innerHTML = score;
-                    createExplosion(ships[j].x,ships[j].y);
+                    createExplosion(ships[j].x,ships[j].y,ships[j].width, ships[j].height);
                 }
 
             }
@@ -172,8 +172,9 @@ const chekHit = (rocket, ship) => {
         const checkXRight = rocket.x - ship.x < ship.width;
         const checkXLeft = rocket.x - ship.x > -rocket.width;
 
-        if (checkXLeft && checkXRight) {
+        if (checkXLeft && checkXRight && ship.life) {
             ship.life = false;
+            createExplosion((spaceShip.x-spaceShip.width/2), spaceShip.y, spaceShip.height, spaceShip.height);
             gameIsOver();
         }
     };
@@ -234,6 +235,7 @@ const startNewGame = () => {
     score = 0;
     showScoreSpan.innerHTML = score;
     startGameMusic.play();
+    spaceShip.life = true;
 };
 
 startButton.addEventListener('click', startNewGame);
