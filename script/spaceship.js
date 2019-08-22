@@ -7,6 +7,21 @@ const drawItem = ({sprite, x, y, width, height}) => {
 
 const drawItems = items => items.map(item => drawItem(item));
 
+const drawExplosion = ({sprite, x, y, width, height,spriteIndex},index) => {
+    if(spriteIndex === (spriteExplosionColection.length -1)) {
+        return false;
+    }
+    const draw = ({sx,sy,swidth,sheight}) => {
+        game.drawImage(sprite, sx, sy, swidth, sheight, x, y, width, height);
+    };
+
+    draw(spriteExplosionColection[spriteIndex]);
+
+    explosions[index].spriteIndex++;
+};
+
+const drawExplosions = items => items.map((item,index) => drawExplosion(item,index));
+
 const drawSpaceShip = ({x,y,width,height,spritePosition,move}) => {
     
     if(!isGameStarted) {
@@ -22,10 +37,10 @@ const drawSpaceShip = ({x,y,width,height,spritePosition,move}) => {
     drawItems(enemys);
     drawItems(rockets);
     drawItems(enemyRockets);
- 
+    drawExplosions(explosions);
     
     move === 'right' && moveSpaceShipRight();
-    move === 'left' && moveSpaceShipRight();
+    move === 'left' && moveSpaceShipLeft();
 };
 
 
@@ -65,11 +80,12 @@ const createEnemy = () => {
         y: 0,
         width: 30,
         height: 30,
-        life: true
+        life: true,
+        directionY: 'down'
     };
     
-    enemy.x > canvasWidth/2 && (enemy.direction = 'left');
-    enemy.x < canvasWidth/2 && (enemy.direction = 'right');
+    enemy.x > canvasWidth/2 && (enemy.directionX = 'left');
+    enemy.x < canvasWidth/2 && (enemy.directionX = 'right');
     
     enemys.push(enemy);
     

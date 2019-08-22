@@ -35,11 +35,23 @@ const FIRE_ENEMY_DELAY = 3000;
 const ENEMY_ROCKETS_SPEED = 25;
 const CREATE_ENEMY_DELAY = 500;
 
+const spriteExplosionColection = [
+    {sx:0,sy:0,swidth:192,sheight:192},
+    {sx:192,sy:0,swidth:192,sheight:192},
+    {sx:384,sy:0,swidth:192,sheight:192},
+    {sx:576,sy:0,swidth:192,sheight:192},
+    {sx:768,sy:0,swidth:192,sheight:192},
+    {sx:0,sy:192,swidth:192,sheight:192},
+    {sx:192,sy:192,swidth:192,sheight:192}
+];
+
 let rockets = [];
 
 let enemyRockets = [];
 
 let enemys = [];
+
+let explosions = [];
 
 let maxEnemys = 5;
 
@@ -55,8 +67,26 @@ enemyImg.src = 'img/enemy.png';
 const enemyRocketImg = new Image();
 enemyRocketImg.src = 'img/enemy-torpedo.png';
 
+const explosionImg = new Image();
+explosionImg.src = 'img/explosion.png';
+
 const fireAudio = new Audio('audio/fire.mp3');
 const killEnemy = new Audio('audio/Kill_Enemy_Sound_Effect.mp3');
+const startGameMusic = new Audio('audio/start.mp3');
+const gameOverMusic = new Audio('audio/game-over.mp3');
+
+const createExplosion = (x,y) => {
+    explosion = {
+        x: x,
+        y: y,
+        width: 30,
+        height: 30,
+        sprite: explosionImg,
+        spriteIndex: 0
+    };
+
+    explosions.push(explosion);
+};
 
 
 const hitEnemy = (bullets, ships, music) => {
@@ -80,6 +110,7 @@ const hitEnemy = (bullets, ships, music) => {
                     music.play();
                     score += 50;
                     showScoreSpan.innerHTML = score;
+                    createExplosion(ships[j].x,ships[j].y);
                 }
 
             }
@@ -133,6 +164,7 @@ const gameIsOver = () => {
     gameOver.style.display = 'block';
     startButton.style.display = 'block';
     showScrore.style.display = 'none';
+    gameOverMusic.play();
 };
 
 const chekHit = (rocket, ship) => {
@@ -189,6 +221,7 @@ const fireEnemy = allEnemys => {
     }, ENEMY_ROCKETS_SPEED);
 };
 
+
 const startNewGame = () => {
     isGameStarted = true;
     startButton.style.display = 'none';
@@ -200,6 +233,7 @@ const startNewGame = () => {
     maxEnemys = 5;
     score = 0;
     showScoreSpan.innerHTML = score;
+    startGameMusic.play();
 };
 
 startButton.addEventListener('click', startNewGame);
